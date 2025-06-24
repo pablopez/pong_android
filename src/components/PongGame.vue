@@ -4,8 +4,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { INITIAL_LIVES } from '../constants'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
+let lives = INITIAL_LIVES
 
 onMounted(() => {
   const ctx = canvas.value!.getContext('2d')!
@@ -20,6 +22,13 @@ onMounted(() => {
   const paddleHeight = 10
   let paddleX = width / 2 - paddleWidth / 2
 
+  const resetBall = () => {
+    ballX = width / 2
+    ballY = height / 2
+    ballVX = 2
+    ballVY = 2
+  }
+
   const update = () => {
     ctx.clearRect(0, 0, width, height)
 
@@ -28,13 +37,27 @@ onMounted(() => {
     ballY += ballVY
 
     if (ballX < 0 || ballX > width) ballVX *= -1
-    if (ballY < 0 || ballY > height) ballVY *= -1
+    if (ballY < 0) ballVY *= -1
+
+    // bottom collision
+    if (ballY + 5 >= height - 20) {
+      if (ballX >= paddleX && ballX <= paddleX + paddleWidth) {
+        ballVY *= -1
+        ballY = height - 20 - 5
+      } else if (ballY + 5 > height) {
+        lives--
+        resetBall()
+      }
+    }
 
     ctx.fillStyle = 'white'
     ctx.fillRect(ballX - 5, ballY - 5, 10, 10)
 
     // paddle
     ctx.fillRect(paddleX, height - 20, paddleWidth, paddleHeight)
+
+    // display lives
+    ctx.fillText(`Lives: ${lives}`, 10, 10)
 
     requestAnimationFrame(update)
   }
