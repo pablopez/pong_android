@@ -40,6 +40,7 @@ onMounted(() => {
   const paddleWidth = 60
   const paddleHeight = 10
   let paddleX = width / 2 - paddleWidth / 2
+  let paddleDX = 0
 
   const resetBall = () => {
     ballX = width / 2
@@ -56,6 +57,11 @@ onMounted(() => {
       ctx.fillText('Game Over', width / 2 - 40, height / 2)
       return
     }
+
+    // update paddle position from keyboard input
+    paddleX += paddleDX
+    if (paddleX < 0) paddleX = 0
+    if (paddleX + paddleWidth > width) paddleX = width - paddleWidth
 
     // ball
     ballX += ballVX
@@ -114,6 +120,28 @@ onMounted(() => {
   canvas.value!.addEventListener('mousemove', (e) => {
     const rect = canvas.value!.getBoundingClientRect()
     paddleX = e.clientX - rect.left - paddleWidth / 2
+  })
+
+  canvas.value!.addEventListener('touchmove', (e) => {
+    const rect = canvas.value!.getBoundingClientRect()
+    paddleX = e.touches[0].clientX - rect.left - paddleWidth / 2
+    e.preventDefault()
+  })
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      paddleDX = -5
+    } else if (e.key === 'ArrowRight') {
+      paddleDX = 5
+    }
+  })
+
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft' && paddleDX < 0) {
+      paddleDX = 0
+    } else if (e.key === 'ArrowRight' && paddleDX > 0) {
+      paddleDX = 0
+    }
   })
 })
 </script>
