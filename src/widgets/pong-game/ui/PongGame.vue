@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { INITIAL_LIVES } from '../../../shared/constants'
+import { INITIAL_LIVES, SPEED_INCREMENT } from '../../../shared/constants'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 let lives = INITIAL_LIVES
@@ -64,7 +64,9 @@ onMounted(() => {
     // bottom collision
     if (ballY + 5 >= height - 20) {
       if (ballX >= paddleX && ballX <= paddleX + paddleWidth) {
-        ballVY *= -1
+        ballVY = -ballVY
+        ballVX *= 1 + SPEED_INCREMENT
+        ballVY *= 1 + SPEED_INCREMENT
         ballY = height - 20 - 5
       } else if (ballY + 5 > height) {
         lives--
