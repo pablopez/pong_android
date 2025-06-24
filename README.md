@@ -42,7 +42,16 @@ npm run build
 npx cap copy android
 ```
 
-3. Open Android Studio to build and run the APK:
+3. Build the APK from the command line:
+
+```bash
+npm run build-apk
+```
+
+The generated file will be located in
+`android/app/build/outputs/apk/debug/app-debug.apk`.
+
+4. Alternatively, open Android Studio to build and run the APK:
 
 ```bash
 npx cap open android
