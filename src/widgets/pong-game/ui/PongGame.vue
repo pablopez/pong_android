@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { INITIAL_LIVES } from '../../shared/constants'
+import { INITIAL_LIVES } from '../../../shared/constants'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 let lives = INITIAL_LIVES
