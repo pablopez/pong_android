@@ -35,6 +35,9 @@ The output will be placed in the `dist` folder.
 npx cap add android
 ```
 
+If your `capacitor.config.ts` file contains the deprecated
+`bundledWebRuntime` option, you can safely remove it.
+
 2. Copy the latest build into the native project:
 
 ```bash
