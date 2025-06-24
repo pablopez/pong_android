@@ -22,6 +22,8 @@ import { INITIAL_LIVES, SPEED_INCREMENT } from '../../../shared/constants'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 let lives = INITIAL_LIVES
+let score = 0
+let level = 1
 const gameOver = ref(false)
 let handleRestart = () => {}
 
@@ -34,6 +36,7 @@ onMounted(() => {
   let ballY = height / 2
   let ballVX = 2
   let ballVY = 2
+  const baseSpeed = Math.sqrt(ballVX * ballVX + ballVY * ballVY)
   const paddleWidth = 60
   const paddleHeight = 10
   let paddleX = width / 2 - paddleWidth / 2
@@ -68,6 +71,11 @@ onMounted(() => {
         ballVX *= 1 + SPEED_INCREMENT
         ballVY *= 1 + SPEED_INCREMENT
         ballY = height - 20 - 5
+
+        const speed = Math.sqrt(ballVX * ballVX + ballVY * ballVY)
+        const increment = Math.max(1, Math.round(speed / baseSpeed))
+        score += increment
+        level = Math.max(1, Math.round(speed / baseSpeed))
       } else if (ballY + 5 > height) {
         lives--
         if (lives <= 0) {
@@ -84,8 +92,10 @@ onMounted(() => {
     // paddle
     ctx.fillRect(paddleX, height - 20, paddleWidth, paddleHeight)
 
-    // display lives
+    // display stats
     ctx.fillText(`Lives: ${lives}`, 10, 10)
+    ctx.fillText(`Score: ${score}`, 10, 20)
+    ctx.fillText(`Level: ${level}`, 10, 30)
 
     requestAnimationFrame(update)
   }
@@ -94,6 +104,8 @@ onMounted(() => {
 
   handleRestart = () => {
     lives = INITIAL_LIVES
+    score = 0
+    level = 1
     gameOver.value = false
     resetBall()
     update()
