@@ -1,5 +1,19 @@
 <template>
-  <canvas ref="canvas" width="480" height="320" class="bg-black"></canvas>
+  <div class="relative">
+    <canvas ref="canvas" width="480" height="320" class="bg-black"></canvas>
+    <div
+      v-if="gameOver"
+      class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-75 text-white"
+    >
+      <div class="mb-2 text-2xl">Game Over</div>
+      <button
+        class="px-4 py-2 bg-white text-black rounded"
+        @click="handleRestart"
+      >
+        Restart
+      </button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -8,6 +22,8 @@ import { INITIAL_LIVES } from '../../../shared/constants'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 let lives = INITIAL_LIVES
+const gameOver = ref(false)
+let handleRestart = () => {}
 
 onMounted(() => {
   const ctx = canvas.value!.getContext('2d')!
@@ -32,6 +48,12 @@ onMounted(() => {
   const update = () => {
     ctx.clearRect(0, 0, width, height)
 
+    if (gameOver.value) {
+      ctx.fillStyle = 'white'
+      ctx.fillText('Game Over', width / 2 - 40, height / 2)
+      return
+    }
+
     // ball
     ballX += ballVX
     ballY += ballVY
@@ -46,7 +68,11 @@ onMounted(() => {
         ballY = height - 20 - 5
       } else if (ballY + 5 > height) {
         lives--
-        resetBall()
+        if (lives <= 0) {
+          gameOver.value = true
+        } else {
+          resetBall()
+        }
       }
     }
 
@@ -63,6 +89,13 @@ onMounted(() => {
   }
 
   update()
+
+  handleRestart = () => {
+    lives = INITIAL_LIVES
+    gameOver.value = false
+    resetBall()
+    update()
+  }
 
   canvas.value!.addEventListener('mousemove', (e) => {
     const rect = canvas.value!.getBoundingClientRect()
