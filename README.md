@@ -2,6 +2,9 @@
 
 This project uses **Vue 3**, **TypeScript**, and **Tailwind CSS** to implement a basic Pong game. It is configured with **Vite** for bundling and **Capacitor** to build a native Android APK.
 
+The paddle can be controlled with the mouse, by dragging on touch screens, or
+using the left and right arrow keys when a keyboard is available.
+
 ## Development
 
 Install dependencies:
